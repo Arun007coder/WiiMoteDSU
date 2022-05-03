@@ -13,8 +13,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-        with:
-          token: ${{ secrets.API_GITHUB_TOKEN }}
 
       - name: Setup environment
         id: setup
@@ -29,13 +27,15 @@ jobs:
           cd build/ios/
           mv iphoneos Payload
           zip -r WiiMoteDSU-${{ steps.setup.outputs.tag }}.ipa Payload
-
-      - name: Upload assets
-        uses: AButler/upload-release-assets@v2.0
+          
+      - name: Upload ios artifact
+        uses: actions/upload-artifact@v3.0.0
         with:
-          files: build/ios/WiiMoteDSU-${{ steps.setup.outputs.tag }}.ipa
-          release-tag: ${{ steps.setup.outputs.tag }}
-          repo-token: ${{ secrets.API_GITHUB_TOKEN }}
+          # Artifact name
+          name: WiiMoteDSU-${{ steps.setup.outputs.tag }}.ipa
+          # A file, directory or wildcard pattern that describes what to upload
+          path: build/ios/WiiMoteDSU-${{ steps.setup.outputs.tag }}.ipa
+          # The desired behavior if no files are found using the provided path
 
   android:
     runs-on: macos-latest
@@ -65,3 +65,13 @@ jobs:
           files: build/app/outputs/flutter-apk/WiiMoteDSU-${{ steps.setup.outputs.tag }}.apk
           release-tag: ${{ steps.setup.outputs.tag }}
           repo-token: ${{ secrets.API_GITHUB_TOKEN }}
+          
+      
+      - name: Upload ios artifact
+        uses: actions/upload-artifact@v3.0.0
+        with:
+          # Artifact name
+          name: WiiMoteDSU-${{ steps.setup.outputs.tag }}.apk
+          # A file, directory or wildcard pattern that describes what to upload
+          path: build/app/outputs/flutter-apk/WiiMoteDSU-${{ steps.setup.outputs.tag }}.apk
+          # The desired behavior if no files are found using the provided path
